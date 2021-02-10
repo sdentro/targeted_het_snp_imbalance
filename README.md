@@ -28,7 +28,7 @@ Run in this order:
 
 ## Generating reference data
 
-First download the SNP reference data from the mouse genomes project here: [ftp://ftp-mouse.sanger.ac.uk/current\_snps](ftp://ftp-mouse.sanger.ac.uk/current_snps)
+First download the SNP reference data from the mouse genomes project here: [ftp://ftp-mouse.sanger.ac.uk/current_snps](ftp://ftp-mouse.sanger.ac.uk/current\_snps)
 
 Then `cd reference` and check the correct filename is referenced in split.sh.
 
