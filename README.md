@@ -10,13 +10,21 @@ Then add samples to the `sample_mapping.txt` file. This file contains two column
 
 Please note that samplenames must be unique. The name provided in `sample_mapping.txt` is used to pattern match BAM files and output of the pipeline
 
+### hg19
+Run in this order:
+ * allelecount
+ * phasing
+ * combine
+ * plotting
+
+### mm10
 Run in this order:
  * allelecount
  * segmentation
  * combine
  * plotting
 
-## Dependencies
+## Dependencies - overall
  * alleleCounter
  * R
  * optparse
@@ -26,9 +34,13 @@ Run in this order:
  * gtools
  * GenomicRanges 
 
+### hg19 - additional dependencies
+ * Impute2
+ * Battenberg GRCh37 reference files from [here](https://github.com/Wedge-lab/battenberg)
+
 ## Generating reference data
 
-First download the SNP reference data from the mouse genomes project here: [ftp://ftp-mouse.sanger.ac.uk/current_snps](ftp://ftp-mouse.sanger.ac.uk/current\_snps)
+First download the SNP reference data from the mouse genomes project here: [ftp://ftp-mouse.sanger.ac.uk/current_snps](ftp://ftp-mouse.sanger.ac.uk/current_snps)
 
 Then `cd reference` and check the correct filename is referenced in split.sh.
 
