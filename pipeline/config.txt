@@ -1,0 +1,4 @@
+item	value
+human_g1000allelesprefix	/gpfs/nobackup/gerstung/sdentro/reference/human/battenberg/battenberg_1000genomesloci_phase3/1000genomesloci2012_chr
+human_imputeinfofile	/gpfs/nobackup/gerstung/sdentro/reference/human/battenberg/battenberg_impute_phase3/impute_info.txt
+human_problemloci	/gpfs/nobackup/gerstung/sdentro/reference/human/battenberg/battenberg_probloci/probloci_270415.txt.gz
