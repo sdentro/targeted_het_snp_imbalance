@@ -36,10 +36,14 @@ Run in this order:
 
 ### hg19 - additional dependencies
  * Impute2
+
+## Reference data
+
+### hg19
+Reference data to count alleles and perform haplotype reconstruction is available on the Battenberg github page
  * Battenberg GRCh37 reference files from [here](https://github.com/Wedge-lab/battenberg)
 
-## Generating reference data
-
+### mm10
 First download the SNP reference data from the mouse genomes project here: [ftp://ftp-mouse.sanger.ac.uk/current_snps](ftp://ftp-mouse.sanger.ac.uk/current_snps)
 
 Then `cd reference` and check the correct filename is referenced in split.sh.
