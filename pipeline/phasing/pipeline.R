@@ -35,11 +35,24 @@ problemloci = config$value[config$item=="human_problemloci"]
 #imputeinfofile = "/gpfs/nobackup/gerstung/sdentro/reference/human/battenberg/battenberg_impute_phase3/impute_info.txt"
 #problemloci = "/gpfs/nobackup/gerstung/sdentro/reference/human/battenberg/battenberg_probloci/probloci_270415.txt.gz"
 
-min_normal_depth = 10
-segmentation_gamma = 10
+usebeagle = TRUE
+           beaglemaxmem=10
+           beaglenthreads=1
+           beaglewindow=40
+           beagleoverlap=4
+        GENOME_VERSION = "b37"
+        GENOMEBUILD = "hg19"
+        BEAGLE_BASEDIR = "/hps/research/gerstung/sdentro/reference/human/battenberg/battenberg_beagle"
+        beaglejar = file.path(BEAGLE_BASEDIR, "beagle.24Aug19.3e8.jar")
+        beagleref.template = file.path(BEAGLE_BASEDIR, GENOME_VERSION, "chrCHROMNAME.1kg.phase3.v5a.b37.bref3")
+        beagleplink.template = file.path(BEAGLE_BASEDIR, GENOME_VERSION, "plink.chrCHROMNAME.GRCh37.map")
+
+
+min_normal_depth = 15
+segmentation_gamma = 5
 phasing_gamma = 1
 segmentation_kmin = 3
-phasing_kmin = 3
+phasing_kmin = 1
 calc_seg_baf_option = 1
 
 if (!dir.exists(file.path(run_dir, tumourname))) {
@@ -48,6 +61,7 @@ if (!dir.exists(file.path(run_dir, tumourname))) {
 setwd(file.path(run_dir, tumourname))
 print(getwd())
 chrom_names = Battenberg:::get.chrom.names(imputeinfofile=imputeinfofile, is.male=is.male)
+print(chrom_names)
 #if (F) {
 clp = parallel::makeCluster(nthreads)
 doParallel::registerDoParallel(clp)
@@ -74,7 +88,7 @@ foreach::foreach(i=1:length(chrom_names)) %dopar% {
                     allelecounter.exe="alleleCounter")
   } else { print("Skipping counting normal reads") }
  print("starting haplotyping") 
-  Battenberg:::run_haplotyping(chrom=i, 
+  Battenberg:::run_haplotyping(chrom=chrom, 
                    tumourname=tumourname, 
                    normalname=normalname, 
                    ismale=is.male, 
@@ -83,7 +97,18 @@ foreach::foreach(i=1:length(chrom_names)) %dopar% {
                    impute_exe="impute2", 
                    min_normal_depth=min_normal_depth, 
                    chrom_names=chrom_names,
-                   snp6_reference_info_file=NA, heterozygousFilter=NA)
+                   snp6_reference_info_file=NA, heterozygousFilter=NA,
+		   usebeagle=usebeagle,
+                        beaglejar=beaglejar,
+                        beagleref=gsub("CHROMNAME", chrom, beagleref.template),
+                        beagleplink=gsub("CHROMNAME", chrom, beagleplink.template),
+                        beaglemaxmem=beaglemaxmem,
+                        beaglenthreads=beaglenthreads,
+                        beaglewindow=beaglewindow,
+                        beagleoverlap=beagleoverlap,
+                        externalhaplotypeprefix=NA,
+                        use_previous_imputation=F)
+
 }
 
 parallel::stopCluster(clp)
@@ -91,13 +116,22 @@ parallel::stopCluster(clp)
 Battenberg:::combine.baf.files(inputfile.prefix=paste(tumourname, "_chr", sep=""), 
                   inputfile.postfix="_heterozygousMutBAFs_haplotyped.txt", 
                   outputfile=paste(tumourname, "_heterozygousMutBAFs_haplotyped.txt", sep=""),
-                  no.chrs=length(chrom_names))
+		  chr_names=chrom_names)
+#chr_names=chrom_names)
 
-Battenberg:::segment.baf.phased(samplename=tumourname,
-                   inputfile=paste(tumourname, "_heterozygousMutBAFs_haplotyped.txt", sep=""), 
-                   outputfile=paste(tumourname, ".BAFsegmented.txt", sep=""),
-                   gamma=segmentation_gamma,
-                   phasegamma=phasing_gamma,
-                   kmin=segmentation_kmin,
-                   phasekmin=phasing_kmin,
-                   calc_seg_baf_option=calc_seg_baf_option)
+#Battenberg:::segment.baf.phased(samplename=tumourname,
+#                   inputfile=paste(tumourname, "_heterozygousMutBAFs_haplotyped.txt", sep=""), 
+#                   outputfile=paste(tumourname, ".BAFsegmented.txt", sep=""),
+#                   gamma=segmentation_gamma,
+#                   phasegamma=phasing_gamma,
+#                   kmin=segmentation_kmin,
+#                   phasekmin=phasing_kmin,
+#                   calc_seg_baf_option=calc_seg_baf_option)
+
+Battenberg:::segment.baf.phased.legacy(samplename=tumourname, 
+	inputfile=paste(tumourname, "_heterozygousMutBAFs_haplotyped.txt", sep=""), 
+	outputfile=paste(tumourname, ".BAFsegmented.txt", sep=""), 
+	gamma=segmentation_gamma, 
+	phasegamma=phasing_gamma,
+	kmin=segmentation_kmin, 
+	phasekmin=phasing_kmin)
